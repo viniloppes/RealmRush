@@ -1808,8 +1808,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dfacf874fe33654da569342f3fc2b28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameObject: {fileID: 5040643765344069697, guid: b940df629b09f434dbb9fd487257db6c, type: 3}
+  enemyPrefab: {fileID: 5040643765344069697, guid: b940df629b09f434dbb9fd487257db6c, type: 3}
   waitTime: 1
+  poolSize: 5
 --- !u!4 &1626985792
 Transform:
   m_ObjectHideFlags: 0

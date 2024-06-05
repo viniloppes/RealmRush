@@ -5,9 +5,9 @@ using UnityEngine;
 public class EnemyMover : MonoBehaviour
 {
     [SerializeField] List<Waypoint> path = new List<Waypoint>();
-    [SerializeField][Range(0, 5f)] float speed = 1f;
+    [SerializeField][Range(0, 5f)] float speed = 2f;
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
         FindPath();
         ReturnToStart();
@@ -43,9 +43,11 @@ public class EnemyMover : MonoBehaviour
             {
                 travelPercent += Time.deltaTime * speed;
                 transform.position = Vector3.Lerp(startPosition, endPosition, travelPercent);
+                transform.LookAt(endPosition);
+               // transform.rotation = waypoint.transform.rotation;
                 yield return new WaitForEndOfFrame();
             }
         }
-        Destroy(gameObject);
+        gameObject.active = false;
     }
 }

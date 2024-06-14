@@ -1,6 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 
 [ExecuteAlways]
@@ -56,8 +59,9 @@ public class CoordinateLabeler : MonoBehaviour
 
     void DisplayCoordinates()
     {
-        coordinates.x = Mathf.RoundToInt(transform.position.x / UnityEditor.EditorSnapSettings.gridSize.x); ;
-        coordinates.y = Mathf.RoundToInt(transform.position.z / UnityEditor.EditorSnapSettings.gridSize.z);
+
+        coordinates.x = Mathf.RoundToInt(transform.position.x / EditorSnapSettings.gridSize.x);
+        coordinates.y = Mathf.RoundToInt(transform.position.z / EditorSnapSettings.gridSize.z);
         label.text = coordinates.x + ", " + coordinates.y;
 
     }

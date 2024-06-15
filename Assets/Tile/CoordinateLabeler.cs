@@ -7,6 +7,7 @@ using UnityEditor;
 using UnityEngine;
 
 [ExecuteAlways]
+[RequireComponent(typeof(TextMeshPro))]
 public class CoordinateLabeler : MonoBehaviour
 {
     Vector2Int coordinates = new Vector2Int();
@@ -34,10 +35,10 @@ public class CoordinateLabeler : MonoBehaviour
             DisplayCoordinates();
 
         }
-        ToggleLable();
-        PaintCoordinates();
+        ToggleLables();
+        SetLabelColor();
     }
-    void ToggleLable()
+    void ToggleLables()
     {
         if (Input.GetKeyDown(KeyCode.C))
         {
@@ -45,7 +46,7 @@ public class CoordinateLabeler : MonoBehaviour
         }
 
     }
-    void PaintCoordinates()
+    void SetLabelColor()
     {
         if (waypoint.IsPlaceable == true)
         {

@@ -24,15 +24,18 @@ public class ObjectPool : MonoBehaviour
     void PopulatePool()
     {
         arrayPool = new GameObject[poolSize];
-        for(int i = 0; i < arrayPool.Length; i++)
+        Debug.Log(arrayPool.Length);
+
+        for (int i = 0; i < arrayPool.Length; i++)
         {
             arrayPool[i] = Instantiate(enemyPrefab, transform);
+            Debug.Log(i + " - " +arrayPool[i]);
             arrayPool[i].SetActive(false);
         }
     }
     void EnableObjectInPool()
     {
-        for(int i = 0;i < arrayPool.Length;i++)
+        for (int i = 0; i < arrayPool.Length; i++)
         {
             if (arrayPool[i].activeInHierarchy == false)
             {

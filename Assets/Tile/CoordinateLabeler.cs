@@ -22,12 +22,12 @@ public class CoordinateLabeler : MonoBehaviour
 
     private void Awake()
     {
+        gridManager = FindObjectOfType<GridManager>();
         label = GetComponent<TextMeshPro>();
         label.enabled = true;
         //waypoint = GetComponentInParent<Waypoint>();
 
         DisplayCoordinates();
-        gridManager = FindObjectOfType<GridManager>();
 
     }
     // Update is called once per frame
@@ -82,9 +82,10 @@ public class CoordinateLabeler : MonoBehaviour
 
     void DisplayCoordinates()
     {
-
-        coordinates.x = Mathf.RoundToInt(transform.position.x / EditorSnapSettings.gridSize.x);
-        coordinates.y = Mathf.RoundToInt(transform.position.z / EditorSnapSettings.gridSize.z);
+        if(gridManager == null) { return; }
+        Debug.Log(gridManager.UnityGridSize);
+        coordinates.x = Mathf.RoundToInt(transform.position.x / gridManager.UnityGridSize);
+        coordinates.y = Mathf.RoundToInt(transform.position.z / gridManager.UnityGridSize);
         label.text = coordinates.x + ", " + coordinates.y;
 
     }

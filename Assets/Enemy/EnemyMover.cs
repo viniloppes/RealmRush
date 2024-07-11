@@ -5,36 +5,57 @@ using UnityEngine;
 
 public class EnemyMover : MonoBehaviour
 {
-    [SerializeField] List<Tile> path = new List<Tile>();
     [SerializeField][Range(0, 5f)] float speed = 2f;
     Enemy enemy;
+    List<Node> path = new List<Node>();
 
+    GridManager gridManager;
+    PathFind pathFinder;
     // Start is called before the first frame update
     void OnEnable()
     {
-        FindPath();
         ReturnToStart();
+        RecalculatePath(true);
         StartCoroutine(FollowPath());
 
+    }
+    private void Awake()
+    {
+        gridManager = FindObjectOfType<GridManager>();
+        pathFinder = FindObjectOfType<PathFind>();
     }
 
     private void Start()
     {
         enemy = FindObjectOfType<Enemy>();
     }
-    void FindPath()
+    void RecalculatePath(bool resets)
     {
-        path.Clear();
-        GameObject parent = GameObject.FindGameObjectWithTag("Path");
-        foreach (Transform child in parent.transform)
+
+
+        Vector2Int coordinates = new Vector2Int();
+        if (resets)
         {
-            //Debug.Log(child.name);
-            Tile waypoint = child.GetComponent<Tile>();
-            if (waypoint != null)
-            {
-                path.Add(waypoint);
-            }
+            coordinates = pathFinder.StartCoordinates;
+        } else
+        {
+            coordinates = gridManager.GetCoordinatesFromPosition(transform.position);
         }
+        StopAllCoroutines();
+        path.Clear();
+
+        path = pathFinder.GetNewPath(coordinates);
+        StartCoroutine(FollowPath());
+        //GameObject parent = GameObject.FindGameObjectWithTag("Path");
+        //foreach (Transform child in parent.transform)
+        //{
+        //    //Debug.Log(child.name);
+        //    Tile waypoint = child.GetComponent<Tile>();
+        //    if (waypoint != null)
+        //    {
+        //        path.Add(waypoint);
+        //    }
+        //}
         //GameObject[] arrayWaypoint = GameObject.FindGameObjectsWithTag("Path").OrderBy(x => x.gameObject.name).ToArray();
         //foreach (GameObject waypoint in arrayWaypoint)
         //{
@@ -45,20 +66,20 @@ public class EnemyMover : MonoBehaviour
 
     void ReturnToStart()
     {
-        gameObject.transform.position = path[0].transform.position;
-        transform.LookAt(path[1].transform.position);
+        gameObject.transform.position = gridManager.GetPositionFromCoordinates(pathFinder.StartCoordinates);
+        //transform.LookAt(path[1].transform.position);
 
     }
     IEnumerator FollowPath()
     {
         //List<Waypoint> listaOrdenada =  path.OrderBy(x => x.name).ToList();
-        foreach (Tile waypoint in path)
+        for(int i = 1; i < path.Count; i++) 
         {
             //gameObject.transform.position = waypoint.transform.position;
             //yield return new WaitForSeconds(waitTime);
 
             Vector3 startPosition = transform.position;
-            Vector3 endPosition = waypoint.transform.position;
+            Vector3 endPosition = gridManager.GetPositionFromCoordinates(path[i].coordinates);
             float travelPercent = 0f;
 
             while (travelPercent < 1f)

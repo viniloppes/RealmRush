@@ -5,7 +5,12 @@ using UnityEngine;
 public class PathFind : MonoBehaviour
 {
     [SerializeField] Vector2Int startCoordinates;
+    public Vector2Int StartCoordinates { get { return startCoordinates; } }
     [SerializeField] Vector2Int destinationCoordinates;
+    public Vector2Int DestinationCoordinates { get { return destinationCoordinates; } }
+
+
+
     Vector2Int[] directions = { Vector2Int.left, Vector2Int.right, Vector2Int.up, Vector2Int.down };
     IDictionary<Vector2Int, Node> grid;
     GridManager gridManager;
@@ -23,6 +28,8 @@ public class PathFind : MonoBehaviour
         if (gridManager != null)
         {
             grid = gridManager.Grid;
+            startNode = grid[startCoordinates];// new Node(startCoordinates, true);
+            destinationNode = grid[destinationCoordinates];// new Node(destinationCoordinates, true);
 
         }
 
@@ -30,18 +37,21 @@ public class PathFind : MonoBehaviour
     private void Start()
     {
         //ExploreNeighbors();
-        startNode = grid[startCoordinates];// new Node(startCoordinates, true);
-        destinationNode = grid[destinationCoordinates];// new Node(destinationCoordinates, true);
+
         GetNewPath();
     }
 
-    List<Node> GetNewPath()
+    public List<Node> GetNewPath()
     {
-        gridManager.ResetNodes();
-        BreadthFirstSearch();
-        return BuildPath();
+        return GetNewPath(startCoordinates);
     }
 
+    public List<Node> GetNewPath(Vector2Int coordinates)
+    {
+        gridManager.ResetNodes();
+        BreadthFirstSearch(coordinates);
+        return BuildPath();
+    }
 
     void ExploreNeighbors()
     {
@@ -70,14 +80,16 @@ public class PathFind : MonoBehaviour
     }
 
     //AMPLIA PRIMEIRA PESQUISA
-    void BreadthFirstSearch()
+    void BreadthFirstSearch(Vector2Int coordinates)
     {
+        grid[startCoordinates].isWalkable = true;
+        grid[destinationCoordinates].isWalkable = true;
         frontier.Clear();
         reached.Clear();
         bool isRunning = true;
 
-        frontier.Enqueue(startNode);
-        reached.Add(startCoordinates, startNode);
+        frontier.Enqueue(grid[coordinates]);
+        reached.Add(coordinates, grid[coordinates]);
 
         while (frontier.Count > 0 && isRunning)
         {
@@ -136,5 +148,10 @@ public class PathFind : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void NotifyReceivers()
+    {
+        BroadcastMessage("RecalculatePath",false, SendMessageOptions.DontRequireReceiver);
     }
 }
